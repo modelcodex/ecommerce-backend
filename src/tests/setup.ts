@@ -21,6 +21,16 @@ beforeAll(async () => {
 
 afterAll(async () => {
 
+
+    // delete test product
+    await prisma.product.deleteMany({
+        where: {
+            name: {
+                startsWith: "test-"
+            }
+        }
+    });
+
     // delete test user data
     await prisma.user.deleteMany({
         where: {
@@ -46,7 +56,8 @@ afterAll(async () => {
                 startsWith: "test-"
             }
         }
-    })
+    });
+
 
 
     await prisma.$disconnect();

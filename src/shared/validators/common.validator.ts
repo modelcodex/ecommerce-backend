@@ -1,7 +1,5 @@
 import z from "zod";
 import { ERROR_MESSAGES } from "../constants/error-messages.js";
-import { BRAND_ERRORS } from "@/modules/catalog/brand/errors/brand-errors.js";
-import { CATEGORY_ERRORS } from "@/modules/catalog/category/errors/category-errors.js";
 
 // ======================
 // BRAND ID SCHEMA
@@ -12,12 +10,7 @@ export const brandIdSchema = z.object({
     id: z
         .string({ error: ERROR_MESSAGES.INVALID_BRAND_ID })
         .trim()
-        .regex(
-            /^[a-z][a-z0-9]{23}$/,
-            {
-                error: ERROR_MESSAGES.INVALID_BRAND_ID,
-            }
-        )
+        .regex(/^[a-z][a-z0-9]{23}$/, { error: ERROR_MESSAGES.INVALID_BRAND_ID })
 });
 
 // ======================
@@ -29,12 +22,7 @@ export const categoryIdSchema = z.object({
     id: z
         .string({ error: ERROR_MESSAGES.INVALID_CATEGORY_ID })
         .trim()
-        .regex(
-            /^[a-z][a-z0-9]{23}$/,
-            {
-                error: ERROR_MESSAGES.INVALID_CATEGORY_ID,
-            }
-        )
+        .regex(/^[a-z][a-z0-9]{23}$/, { error: ERROR_MESSAGES.INVALID_CATEGORY_ID })
 });
 
 // ======================
@@ -46,10 +34,5 @@ export const productIdSchema = z.object({
     id: z
         .string({ error: ERROR_MESSAGES.INVALID_PRODUCT_ID })
         .trim()
-        .regex(
-            /^[a-z][a-z0-9]{23}$/,
-            {
-                error: ERROR_MESSAGES.INVALID_PRODUCT_ID,
-            }
-        )
+        .regex(/^[a-z][a-z0-9]{23}$/, { error: ERROR_MESSAGES.INVALID_PRODUCT_ID })
 });

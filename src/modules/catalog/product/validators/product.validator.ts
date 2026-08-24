@@ -146,3 +146,12 @@ export const productQuerySchema = z.object({
         .enum(["asc", "desc"])
         .default("desc"),
 });
+
+export const productSlugSchema = z.object({
+    slug: z
+        .string({ error: ERROR_MESSAGES.INVALID_PRODUCT_SLUG, })
+        .trim()
+        .min(5, { error: ERROR_MESSAGES.INVALID_PRODUCT_SLUG, })
+        .max(50, { error: ERROR_MESSAGES.INVALID_PRODUCT_SLUG, })
+        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { error: ERROR_MESSAGES.INVALID_PRODUCT_SLUG, }),
+});
