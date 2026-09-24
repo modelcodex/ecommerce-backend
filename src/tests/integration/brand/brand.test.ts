@@ -6,6 +6,7 @@ import { ERROR_MESSAGES } from "@/shared/constants/error-messages.js";
 import { BRAND_ERRORS } from "@/modules/catalog/brand/errors/brand-errors.js";
 import { createId } from "@paralleldrive/cuid2";
 import { brandService } from "@/modules/catalog/brand/services/brand.service.js";
+import { productController } from "@/modules/catalog/product/controllers/product.controller.js";
 
 
 
@@ -306,6 +307,7 @@ describe("BRAND API", () => {
 
         // soft delete a brand
         it("should soft delete a brand", async () => {
+
             const id = result.id;
             const response = await request(app)
                 .delete(`${apiEndPoint}/${id}`);

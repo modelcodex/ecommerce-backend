@@ -19,4 +19,6 @@ export const BRAND_ERRORS = {
     BRAND_SLUG_EXISTS: "Brand slug exists",
 
     BRAND_NOT_FOUND: "Brand name not found",
+
+    BRAND_HAS_PRODUCTS: "Brand has products."
 } as const;

@@ -54,7 +54,6 @@ describe("Product API", async () => {
     const brandId = brand.body.data.id;
 
 
-
     // ==========================
     // POST /PRODUCTS TEST
     // ==========================

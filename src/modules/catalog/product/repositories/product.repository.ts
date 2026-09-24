@@ -7,6 +7,21 @@ import { prisma } from "@/infrastructure/database/prisma/prisma.client.js";
 // =======================
 
 class ProductRepository {
+
+    // CHECK EXISTING BRAND BY ID
+    async existsBrandById(id: string): Promise<boolean> {
+        const brand = await prisma.brand.findUnique({
+            where: {
+                id,
+            },
+            select: {
+                id: true,
+            },
+        });
+
+        return brand !== null;
+    };
+
     // ==================
     // CREATE
     // ==================

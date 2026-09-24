@@ -6,6 +6,7 @@ import { ConflictError } from "@/shared/errors/conflict.error.js";
 import { BRAND_ERRORS } from "../errors/brand-errors.js";
 import { NotFoundError } from "@/shared/errors/not-found.error.js";
 import { ERROR_MESSAGES } from "@/shared/constants/error-messages.js";
+import { productRepository } from "../../product/repositories/product.repository.js";
 
 
 class BrandService {
@@ -148,11 +149,12 @@ class BrandService {
             throw new NotFoundError(BRAND_ERRORS.BRAND_NOT_FOUND);
         }
         // WHEN PRODUCT REPOSITORY IS READY, COMPLETE THIS PART
-        // const hasProducts = await productRepository.existsByBrandId(id);
+        // note: this code is completed accordingly after the completion of product repository 
+        const hasProducts = await productRepository.countByBrand(id);
 
-        // if (hasProducts) {
-        //     throw new ConflictError(BRAND_ERRORS.BRAND_HAS_PRODUCTS);
-        // }
+        if (hasProducts > 0) {
+            throw new ConflictError(BRAND_ERRORS.BRAND_HAS_PRODUCTS);
+        }
 
         return await brandRepository.delete(id);
     }
