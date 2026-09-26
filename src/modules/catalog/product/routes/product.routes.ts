@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import { productController } from "../controllers/product.controller.js";
+
+import { productController } from "../product/controllers/product.controller.js";
 import { validateBody, validateParams, validateQuery, } from "@/shared/middlewares/validate-request.middleware.js";
 import { brandIdSchema, productIdSchema, categoryIdSchema } from "@/shared/validators/common.validator.js";
-import { createProductSchema, updateProductSchema, productQuerySchema, productSlugSchema } from "../validators/product.validator.js";
+import { createProductSchema, updateProductSchema, productQuerySchema, productSlugSchema } from "../product/validators/product.validator.js";
 
 // =================
 // PRODUCT ROUTER

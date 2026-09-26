@@ -3,7 +3,7 @@ import type { ProductVariant } from "@prisma/client";
 import { prisma } from "@/infrastructure/database/prisma/prisma.client.js";
 import { NotFoundError } from "@/shared/errors/not-found.error.js";
 import { ConflictError } from "@/shared/errors/conflict.error.js";
-import { productRepository } from "../repositories/product.repository.js";
+import { productRepository } from "../product/repositories/product.repository.js";
 import { variantRepository } from "./variant.repository.js";
 import type { CreateVariantDto, UpdateVariantDto, } from "./variant.types.js";
 import { VARIANT_ERRORS } from "./variant.errors.js";

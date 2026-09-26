@@ -1,6 +1,6 @@
 import { productRepository } from "../repositories/product.repository.js";
-import { categoryRepository } from "../../category/repositories/category.repository.js";
-import { brandRepository } from "../../brand/repositories/brand.repository.js";
+import { categoryRepository } from "../../../category/repositories/category.repository.js";
+import { brandRepository } from "../../../brand/repositories/brand.repository.js";
 import type { Product } from "@prisma/client";
 
 import type { CreateProductDto, UpdateProductDto } from "../types/product.types.js";
