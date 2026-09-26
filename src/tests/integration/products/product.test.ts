@@ -1,8 +1,8 @@
 import request from "supertest";
 import { createId } from "@paralleldrive/cuid2";
 import app from "@/app.js";
-import { PRODUCT_MESSAGES } from "@/modules/catalog/product/product/constants/product.constants.js";
-import { PRODUCT_ERRORS } from "@/modules/catalog/product/product/errors/product-errors.js";
+import { PRODUCT_MESSAGES } from "@/modules/catalog/product/constants/product.constants.js";
+import { PRODUCT_ERRORS } from "@/modules/catalog/product/errors/product-errors.js";
 
 
 // ====================

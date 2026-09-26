@@ -3,8 +3,7 @@ import request from "supertest";
 import app from "@/app.js";
 
 import { prisma } from "@/infrastructure/database/prisma/prisma.client.js";
-import { VARIANT_ERRORS } from "@/modules/catalog/product/variant/variant.errors.js";
-import { VARIANT_MESSAGES } from "@/modules/catalog/product/variant/variant.constants.js";
+import { VARIANT_MESSAGES } from "@/modules/catalog/variant/variant.constants.js";
 
 
 const apiEndPoint = "/api/v1/products/variants";

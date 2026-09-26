@@ -3,8 +3,8 @@ import request from "supertest";
 import app from "@/app.js";
 import { prisma } from "@/infrastructure/database/prisma/prisma.client.js";
 
-import { INVENTORY_ERRORS } from "@/modules/catalog/product/inventory/inventory.errors.js";
-import { INVENTORY_MESSAGES } from "@/modules/catalog/product/inventory/inventory.constants.js";
+import { INVENTORY_ERRORS } from "@/modules/catalog/inventory/inventory.errors.js";
+import { INVENTORY_MESSAGES } from "@/modules/catalog/inventory/inventory.constants.js";
 
 
 // =========================
