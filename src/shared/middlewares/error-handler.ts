@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import { AppError } from "../errors/app.error.js";
 import { ZodError } from "zod";
 import { ERROR_MESSAGES } from "../constants/error-messages.js";
+import { Prisma } from "@prisma/client";
 
 
 // IMPORTANT
@@ -31,9 +32,19 @@ export function errorHandler(
         });
     }
 
-    // If not AppError, return internal server error
+
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid database operation.",
+        });
+    }
+
+
+    // If not the above errors return internal server error
     return res.status(500).json({
         success: false,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
     });
+
 }

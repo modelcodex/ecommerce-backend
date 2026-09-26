@@ -17,7 +17,6 @@ class InventoryService {
     // =================
     // CREATE INVENTORY
     // =================
-
     async create(data: CreateInventoryDto): Promise<Inventory> {
 
         // Check if inventory already exists
@@ -25,7 +24,9 @@ class InventoryService {
             await inventoryRepository.findByVariantId(data.variantId);
 
         if (existingInventory) {
-            throw new ConflictError(INVENTORY_ERRORS.INVENTORY_ALREADY_EXISTS);
+            throw new ConflictError(
+                INVENTORY_ERRORS.INVENTORY_ALREADY_EXISTS
+            );
         }
 
         // Validate reserved quantity against stock
@@ -33,22 +34,25 @@ class InventoryService {
         const reservedQuantity = data.reservedQuantity ?? 0;
 
         if (reservedQuantity > quantity) {
-            throw new BadRequestError(INVENTORY_ERRORS.RESERVED_QUANTITY_EXCEEDS_STOCK);
+            throw new BadRequestError(
+                INVENTORY_ERRORS.RESERVED_QUANTITY_EXCEEDS_STOCK
+            );
         }
 
         return await inventoryRepository.create({
             variant: {
                 connect: {
                     id: data.variantId,
-                },
+                }
             },
             quantity,
             reservedQuantity,
             allowBackorder: data.allowBackorder ?? false,
-            ...(data.lowStockAlert !== undefined && { lowStockAlert: data.lowStockAlert, }),
+            ...(data.lowStockAlert !== undefined && {
+                lowStockAlert: data.lowStockAlert,
+            }),
         });
     }
-
     // =================
     // GET BY ID
     // =================

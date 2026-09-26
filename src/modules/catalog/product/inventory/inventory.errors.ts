@@ -7,4 +7,5 @@ export const INVENTORY_ERRORS = {
     INSUFFICIENT_STOCK: "Insufficient stock.",
     BACKORDER_NOT_ALLOWED: "Backorder is not allowed.",
     LOW_STOCK_ALERT_INVALID: "Low stock alert cannot be negative.",
+    INVENTORY_VARIANT_NOT_FOUND: "Product variant does not exist.",
 } as const;
