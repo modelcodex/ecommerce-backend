@@ -1,5 +1,4 @@
 import type { Prisma } from "@prisma/client";
-
 import { prisma } from "@/infrastructure/database/prisma/prisma.client.js";
 
 // ============================
@@ -56,6 +55,17 @@ const cartItemInclude = {
 class CartRepository {
 
     // ============================
+    // FIND CART BY ID
+    // ============================
+
+    async findById(cartId: string) {
+        return await prisma.cart.findUnique({
+            where: { id: cartId },
+            include: cartInclude,
+        });
+    }
+
+    // ============================
     // FIND CART BY USER ID
     // ============================
 
@@ -67,7 +77,18 @@ class CartRepository {
     }
 
     // ============================
-    // FIND OR CREATE CART
+    // FIND CART BY GUEST TOKEN HASH
+    // ============================
+
+    async findByGuestTokenHash(guestTokenHash: string) {
+        return await prisma.cart.findUnique({
+            where: { guestTokenHash },
+            include: cartInclude,
+        });
+    }
+
+    // ============================
+    // FIND OR CREATE CART BY USER ID
     // ============================
 
     async findOrCreateByUserId(userId: string) {
@@ -76,6 +97,39 @@ class CartRepository {
             update: {},
             create: { userId },
             include: cartInclude,
+        });
+    }
+
+    // ============================
+    // CREATE GUEST CART
+    // ============================
+
+    async createGuestCart(guestTokenHash: string, expiresAt: Date) {
+        return await prisma.cart.create({
+            data: {
+                guestTokenHash,
+                expiresAt,
+            },
+            include: cartInclude,
+        });
+    }
+
+    // ============================
+    // CLAIM GUEST CART
+    // ============================
+
+    async claimGuestCart(cartId: string, guestTokenHash: string, userId: string) {
+        return await prisma.cart.updateMany({
+            where: {
+                id: cartId,
+                guestTokenHash,
+                userId: null,
+            },
+            data: {
+                userId,
+                guestTokenHash: null,
+                expiresAt: null,
+            },
         });
     }
 
@@ -174,6 +228,70 @@ class CartRepository {
             include: {
                 product: true,
                 inventory: true,
+            },
+        });
+    }
+
+    // ============================
+    // MERGE GUEST CART INTO USER CART
+    // ============================
+
+    async mergeGuestCart(guestCartId: string, userCartId: string) {
+
+        return await prisma.$transaction(async (tx) => {
+
+            const guestItems = await tx.cartItem.findMany({
+                where: {
+                    cartId: guestCartId,
+                },
+            });
+
+            for (const item of guestItems) {
+                await tx.cartItem.upsert({
+                    where: {
+                        cartId_variantId: {
+                            cartId: userCartId,
+                            variantId: item.variantId,
+                        },
+                    },
+                    create: {
+                        cartId: userCartId,
+                        variantId: item.variantId,
+                        quantity: item.quantity,
+                    },
+                    update: {
+                        quantity: {
+                            increment: item.quantity,
+                        },
+                    },
+                });
+            }
+
+            await tx.cart.delete({
+                where: {
+                    id: guestCartId,
+                },
+            });
+
+            return await tx.cart.findUnique({
+                where: {
+                    id: userCartId,
+                },
+                include: cartInclude,
+            });
+        });
+    }
+
+    // ============================
+    // DELETE GUEST CART
+    // ============================
+
+    async deleteGuestCart(cartId: string, guestTokenHash: string) {
+        return await prisma.cart.deleteMany({
+            where: {
+                id: cartId,
+                guestTokenHash,
+                userId: null,
             },
         });
     }

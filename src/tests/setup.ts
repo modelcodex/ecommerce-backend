@@ -21,6 +21,16 @@ beforeAll(async () => {
 
 afterAll(async () => {
 
+    // delete test cart
+    await prisma.cart.deleteMany({
+        where: {
+            user: {
+                email: {
+                    startsWith: "test-",
+                },
+            },
+        },
+    });
 
     // delete test product
     await prisma.product.deleteMany({
@@ -57,7 +67,6 @@ afterAll(async () => {
             }
         }
     });
-
 
 
     await prisma.$disconnect();

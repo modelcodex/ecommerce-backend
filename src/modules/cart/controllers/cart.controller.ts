@@ -1,8 +1,21 @@
 import type { Request, Response, NextFunction } from "express";
-
 import { SUCCESS_MESSAGES } from "@/shared/constants/success-messages.js";
-
+import type { AddCartItemInput, UpdateCartItemInput } from "../types/cart.types.js";
 import { cartService } from "../services/cart.service.js";
+
+// ============================
+// GUEST CART COOKIE
+// ============================
+
+const GUEST_CART_COOKIE = "guestCartToken";
+
+const GUEST_CART_COOKIE_OPTIONS = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    maxAge: 10 * 24 * 60 * 60 * 1000,
+    path: "/",
+};
 
 // ============================
 // CART CONTROLLER
@@ -11,22 +24,40 @@ import { cartService } from "../services/cart.service.js";
 class CartController {
 
     // ============================
+    // SET GUEST CART COOKIE
+    // ============================
+
+    private setGuestCookie(res: Response, guestToken?: string): void {
+        if (!guestToken) {
+            return;
+        }
+
+        res.cookie(
+            GUEST_CART_COOKIE,
+            guestToken,
+            GUEST_CART_COOKIE_OPTIONS
+        );
+    }
+
+    // ============================
     // GET CART
     // ============================
 
-    async getCart(req: Request, res: Response, next: NextFunction): Promise<void> {
+    getCart = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const userId = req.user!.userId as string;
+            const userId = req.user?.userId;
+            const guestToken = req.cookies?.[GUEST_CART_COOKIE];
 
-            const cart = await cartService.getCart(userId);
+            const result = await cartService.getCart(userId, guestToken);
+
+            this.setGuestCookie(res, result?.guestToken);
 
             res.status(200).json({
                 success: true,
                 message: SUCCESS_MESSAGES.FETCHED,
-                data: cart,
+                data: result?.cart,
             });
         } catch (error) {
-            console.log(error)
             next(error);
         }
     }
@@ -35,17 +66,25 @@ class CartController {
     // ADD ITEM TO CART
     // ============================
 
-    async addItem(req: Request, res: Response, next: NextFunction): Promise<void> {
+    addItem = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const userId = req.user!.userId as string;
-            const data = res.locals.body;
+            const userId = req.user?.userId;
+            const guestToken = req.cookies?.[GUEST_CART_COOKIE];
 
-            const cart = await cartService.addItem(userId, data);
+            const data = res.locals.body as AddCartItemInput;
+
+            const result = await cartService.addItem(
+                data,
+                userId,
+                guestToken
+            );
+
+            this.setGuestCookie(res, result.guestToken);
 
             res.status(200).json({
                 success: true,
                 message: SUCCESS_MESSAGES.CREATED,
-                data: cart,
+                data: result.cart,
             });
         } catch (error) {
             next(error);
@@ -58,17 +97,23 @@ class CartController {
 
     async updateItem(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = req.user!.userId as string;
+            const userId = req.user?.userId;
+            const guestToken = req.cookies?.[GUEST_CART_COOKIE];
+
             const { itemId } = res.locals.params as { itemId: string };
+            const data = res.locals.body as UpdateCartItemInput;
 
-            const data = res.locals.body;
-
-            const cart = await cartService.updateItem(userId, itemId, data);
+            const result = await cartService.updateItem(
+                itemId,
+                data,
+                userId,
+                guestToken
+            );
 
             res.status(200).json({
                 success: true,
                 message: SUCCESS_MESSAGES.UPDATED,
-                data: cart,
+                data: result.cart,
             });
         } catch (error) {
             next(error);
@@ -81,15 +126,21 @@ class CartController {
 
     async removeItem(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = req.user!.userId as string;
+            const userId = req.user?.userId;
+            const guestToken = req.cookies?.[GUEST_CART_COOKIE];
+
             const { itemId } = res.locals.params as { itemId: string };
 
-            const cart = await cartService.removeItem(userId, itemId);
+            const result = await cartService.removeItem(
+                itemId,
+                userId,
+                guestToken
+            );
 
             res.status(200).json({
                 success: true,
                 message: SUCCESS_MESSAGES.DELETED,
-                data: cart,
+                data: result.cart,
             });
         } catch (error) {
             next(error);
@@ -102,16 +153,21 @@ class CartController {
 
     async clearCart(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = req.user!.userId as string;
+            const userId = req.user?.userId;
+            const guestToken = req.cookies?.[GUEST_CART_COOKIE];
 
-            const cart = await cartService.clearCart(userId);
+            const result = await cartService.clearCart(
+                userId,
+                guestToken
+            );
 
             res.status(200).json({
                 success: true,
                 message: SUCCESS_MESSAGES.DELETED,
-                data: cart,
+                data: result.cart,
             });
         } catch (error) {
+
             next(error);
         }
     }

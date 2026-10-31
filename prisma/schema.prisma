@@ -363,15 +363,17 @@ model Inventory {
 model Cart {
   id String @id @default(cuid(2))
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  guestTokenHash String? @unique
 
   items CartItem[]
 
+  expiresAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([userId])
 }
 
 // =====================

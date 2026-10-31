@@ -27,3 +27,40 @@ export const authenticate = (
         next(error);
     }
 };
+
+
+// ============================
+// OPTIONAL AUTHENTICATION
+// ============================
+
+export const optionalAuthenticate = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): void => {
+    try {
+        const authHeader = req.headers.authorization;
+
+        // Allow guest requests without an access token.
+        if (!authHeader) {
+            next();
+            return;
+        }
+
+        const [scheme, token] = authHeader.trim().split(/\s+/);
+
+        // Reject malformed authorization headers.
+        if (scheme?.toLowerCase() !== "bearer" || !token) {
+            throw new UnauthorizedError("Invalid authorization header.");
+        }
+
+        // Verify the access token.
+        const payload = jwtService.verifyAccessToken(token);
+
+        req.user = payload;
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+};

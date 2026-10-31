@@ -1,14 +1,7 @@
 import { Router } from "express";
-
 import { cartController } from "../controllers/cart.controller.js";
-
-import {
-    validateBody,
-    validateParams,
-} from "@/shared/middlewares/validate-request.middleware.js";
-
-import { authenticate } from "@/modules/auth/middlewares/auth.middleware.js";
-
+import { validateBody, validateParams } from "@/shared/middlewares/validate-request.middleware.js";
+import { optionalAuthenticate } from "@/modules/auth/middlewares/auth.middleware.js";
 import { addCartItemSchema, updateCartItemSchema, cartItemIdParamsSchema } from "../validators/cart.validators.js";
 
 // ==================
@@ -18,10 +11,10 @@ import { addCartItemSchema, updateCartItemSchema, cartItemIdParamsSchema } from 
 const router = Router();
 
 // ==================
-// AUTHENTICATION
+// OPTIONAL AUTHENTICATION
 // ==================
 
-router.use(authenticate);
+router.use(optionalAuthenticate);
 
 
 // ==================

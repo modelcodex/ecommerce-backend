@@ -7,7 +7,6 @@ import { BRAND_ERRORS } from "@/modules/catalog/brand/errors/brand-errors.js";
 import { createId } from "@paralleldrive/cuid2";
 
 
-
 describe("BRAND API", () => {
 
     const apiEndPoint = "/api/v1/brands"
