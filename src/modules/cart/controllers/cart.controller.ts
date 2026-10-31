@@ -16,7 +16,7 @@ class CartController {
 
     async getCart(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = res.locals.user.id as string;
+            const userId = req.user!.userId as string;
 
             const cart = await cartService.getCart(userId);
 
@@ -26,6 +26,7 @@ class CartController {
                 data: cart,
             });
         } catch (error) {
+            console.log(error)
             next(error);
         }
     }
@@ -36,7 +37,7 @@ class CartController {
 
     async addItem(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = res.locals.user.id as string;
+            const userId = req.user!.userId as string;
             const data = res.locals.body;
 
             const cart = await cartService.addItem(userId, data);
@@ -57,7 +58,7 @@ class CartController {
 
     async updateItem(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = res.locals.user.id as string;
+            const userId = req.user!.userId as string;
             const { itemId } = res.locals.params as { itemId: string };
 
             const data = res.locals.body;
@@ -80,7 +81,7 @@ class CartController {
 
     async removeItem(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = res.locals.user.id as string;
+            const userId = req.user!.userId as string;
             const { itemId } = res.locals.params as { itemId: string };
 
             const cart = await cartService.removeItem(userId, itemId);
@@ -101,7 +102,7 @@ class CartController {
 
     async clearCart(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = res.locals.user.id as string;
+            const userId = req.user!.userId as string;
 
             const cart = await cartService.clearCart(userId);
 
